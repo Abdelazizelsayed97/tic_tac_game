@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tic_toc_game/utils/consts.dart';
 
 import '../../../../utils/text_styles/text_styles.dart';
 import '../state_mangement/game_cubit/game_cubit.dart';
@@ -9,7 +10,10 @@ class ShowDialog {
     _handleGameResultDialog(context!, winner);
   }
 
-  static showErrorDialog() {}
+  static showErrorDialog(
+      {required BuildContext context, required String message, }) {
+    _showErrorDialog( context, message);
+  }
 }
 
 // void showErrorDialog(BuildContext context, String) {}
@@ -29,6 +33,7 @@ void _handleGameResultDialog(
     }
     if (config.message == GameResultDialogMessage.botWins) {
       Navigator.of(context).pop();
+      gameCubit.restartGame();
     }
     if (config.message == GameResultDialogMessage.equal) {
       Navigator.of(context).pop();
@@ -105,7 +110,7 @@ GameResultDialogConfig _getDialogConfig(String userMark, String? winner) {
       message: GameResultDialogMessage.userWins,
       buttonColor: Colors.green,
     );
-  } else if (winner != null) {
+  } else if (winner ==  Consts.botMark) {
     return GameResultDialogConfig(
       message: GameResultDialogMessage.botWins,
       buttonColor: Colors.red,
@@ -117,6 +122,38 @@ GameResultDialogConfig _getDialogConfig(String userMark, String? winner) {
     );
   }
 }
+ _showErrorDialog(BuildContext context,String message ) {
+   showDialog(
+     context: context,
+     barrierDismissible: false,
+     builder: (context) {
+       return AlertDialog(
+         content: Text(
+           message,
+           style: Styles.normal(fontSize: 18, color: Colors.black),
+           textAlign: TextAlign.center,
+         ),
+         actions: [
+           TextButton(
+             onPressed: () {
+               Navigator.of(context).pop();
+             },
+             style: ButtonStyle(
+               backgroundColor: MaterialStateProperty.all(Colors.green.shade300),
+               foregroundColor: MaterialStateProperty.all(Colors.white),
+               shape: MaterialStateProperty.all(
+                 RoundedRectangleBorder(
+                   borderRadius: BorderRadius.circular(8),
+                 ),
+               ),
+             ),
+             child: Text('ok'),
+           ),
+         ],
+       );
+     },
+   );
+ }
 
 class GameResultDialogMessage {
   static const String userWins = 'Congratulations! You Win!';

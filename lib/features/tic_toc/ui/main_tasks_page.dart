@@ -19,7 +19,7 @@ class MainTasksPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => GameCubit(userMark: 'x'),
-      child: MainTasksBody(),
+      child: const MainTasksBody(),
     );
   }
 }
@@ -43,9 +43,13 @@ class _MainTasksBodyState extends State<MainTasksBody> {
   }
 
   _stateChanges(TasksState newState) {
-    if (newState is TaskAssigned) {
-      return newState as TaskAssigned;
-    } else {
+    if (newState is TaskAssignedSuccess) {
+      return newState;
+    } else if (newState is TaskCompleted) {
+      return newState;
+    } else if (newState is GetTasksSuccess) {
+      return newState;
+    } else if (newState is GetCompletedTasksSuccess) {
       return newState;
     }
   }
@@ -56,9 +60,11 @@ class _MainTasksBodyState extends State<MainTasksBody> {
       length: Consts.tabsTitles.length,
       child: BlocBuilder<TasksCubit, TasksState>(
         builder: (context, state) {
-          if (state is TaskRetrieved ||
-              state is TaskAssigned ||
-              state is TaskCompleted) {
+          if (state is GetTasksSuccess ||
+              state is TaskAssignedSuccess ||
+              state is TaskCompleted ||
+              state is GetCompletedTasksSuccess) {
+            print('>>>>>>>>>>>>>>>>> $state');
             return Scaffold(
               appBar: const AppBarWidget(),
               body: SafeArea(
@@ -84,10 +90,6 @@ class _MainTasksBodyState extends State<MainTasksBody> {
                   ),
                 ),
               ),
-            );
-          } else if (state is TasksLoading) {
-            return const Center(
-              child: CircularProgressIndicator(),
             );
           }
           return const Scaffold(

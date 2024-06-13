@@ -7,6 +7,6 @@ class CompletedTasksUseCase{
 
   CompletedTasksUseCase(this._tasksRepository);
   void setCompletedTask(CreateTasksEntity input){
-    _tasksRepository.setCompletedTasks(input);
+    _tasksRepository.addedCompletedTasks(input);
   }
 }

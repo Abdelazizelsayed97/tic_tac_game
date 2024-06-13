@@ -11,20 +11,20 @@ class TasksInitial extends TasksState {}
 
 class TasksLoading extends TasksState {}
 
-class TaskSet extends TasksState {
+class TaskSetSuccess extends TasksState {
   @override
   List<Object> get props => [];
 }
 
-class TaskRetrieved extends TasksState {
+class GetTasksSuccess extends TasksState {
   final GetTasksModel previewModel;
 
-  const TaskRetrieved({required this.previewModel});
+  const GetTasksSuccess({required this.previewModel});
 
-  TaskRetrieved copyWith({
+  GetTasksSuccess copyWith({
     GetTasksModel? previewModel,
   }) {
-    return TaskRetrieved(
+    return GetTasksSuccess(
       previewModel: previewModel ?? this.previewModel,
     );
   }
@@ -33,24 +33,30 @@ class TaskRetrieved extends TasksState {
   List<Object> get props => [previewModel];
 }
 
+class GetCompletedTasksSuccess extends TasksState {
+  final List<CreateTasksEntity> previewEntity;
+  final GetTasksModel previewModel;
 
-class TaskAssigned extends TasksState {
+  const GetCompletedTasksSuccess(this.previewEntity, this.previewModel);
+}
+
+class TaskAssignedSuccess extends TasksState {
   final int assignedTask;
   final int assignedTimeout;
   final GetTasksModel previewModel;
 
-  const TaskAssigned({
+  const TaskAssignedSuccess({
     required this.assignedTask,
     required this.assignedTimeout,
     required this.previewModel,
   });
 
-  TaskAssigned copyWith({
+  TaskAssignedSuccess copyWith({
     int? assignedTask,
     int? assignedTimeout,
     GetTasksModel? previewModel,
   }) {
-    return TaskAssigned(
+    return TaskAssignedSuccess(
       assignedTask: assignedTask ?? this.assignedTask,
       assignedTimeout: assignedTimeout ?? this.assignedTimeout,
       previewModel: previewModel ?? this.previewModel,
@@ -65,7 +71,7 @@ class TaskCompleted extends TasksState {
   final int? assignedTask;
   final GetTasksModel previewModel;
 
-  const TaskCompleted({ this.assignedTask, required this.previewModel});
+  const TaskCompleted({this.assignedTask, required this.previewModel});
 
   @override
   List<Object> get props => [previewModel];

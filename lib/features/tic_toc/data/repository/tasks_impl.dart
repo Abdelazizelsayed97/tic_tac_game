@@ -7,7 +7,7 @@ class TasksImplRepository implements TasksRepository {
   String _sequence = '';
   List<int> _taskList = [];
   List<int> _taskTimeouts = [];
-  List<CreateTasksEntity> completedTasks = [];
+  List<CreateTasksEntity> completedTasksList = [];
 
   @override
   CreateTasksEntity getTasks() {
@@ -24,22 +24,12 @@ class TasksImplRepository implements TasksRepository {
   void assignTasks(GetTasksModel input) {}
 
   @override
-  void setCompletedTasks(CreateTasksEntity input) {
-    completedTasks.add(input);
+  void addedCompletedTasks(CreateTasksEntity input) {
+    completedTasksList.add(input);
   }
 
   @override
-  CreateTasksEntity getCompletedTasks() {
-    return CreateTasksEntity(
-        taskCount: completedTasks
-            .map(
-              (e) => e.taskCount,
-            )
-            .toString(),
-        sequence: completedTasks
-            .map(
-              (e) => e.taskCount,
-            )
-            .toString());
+  List<CreateTasksEntity> getCompletedTasks() {
+    return completedTasksList;
   }
 }

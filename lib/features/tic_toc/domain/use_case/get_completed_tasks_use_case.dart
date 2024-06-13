@@ -4,5 +4,5 @@ import 'package:tic_toc_game/features/tic_toc/domain/repository/tasks_repository
 class GetCompletedTasksUseCase{
   final TasksRepository _tasksRepository;
   GetCompletedTasksUseCase(this._tasksRepository);
-CreateTasksEntity getCompletedTusks() => _tasksRepository.getCompletedTasks();
+List<CreateTasksEntity> getCompletedTusks() => _tasksRepository.getCompletedTasks();
 }

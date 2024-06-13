@@ -10,8 +10,8 @@ import '../state_mangement/game_cubit/game_cubit.dart';
 import 'game_result_handler.dart';
 
 class PlayScreen extends StatefulWidget {
-  const PlayScreen({super.key});
-
+  const PlayScreen({super.key, required this.removeFormList});
+final int removeFormList;
   @override
   State<PlayScreen> createState() => _PlayScreenState();
 }
@@ -20,22 +20,22 @@ class _PlayScreenState extends State<PlayScreen> {
   @override
   void initState() {
     super.initState();
-    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: MediaQuery
-          .of(context)
-          .size
-          .height * .5,
+      height: MediaQuery.of(context).size.height * .5,
       child: BlocListener<TasksCubit, TasksState>(
         listener: (context, state) {
           if (state is TaskCompleted) {
             print('state is TaskCompleted');
+            context.read<TasksCubit>().deleteFromList(widget.removeFormList);
             DefaultTabController.of(context).animateTo(2);
-            print('State is $state');
+            context.read<TasksCubit>().fetchCompletedTasks();
+          } else if (state is TaskAssignedSuccess) {
+            print('state is TaskAssigned');
+            context.read<GameCubit>().restartGame();
           }
         },
         child: Stack(
@@ -44,13 +44,12 @@ class _PlayScreenState extends State<PlayScreen> {
               child: BlocConsumer<GameCubit, GameState>(
                 listener: (context, state) {
                   if (state is GameLoaded && state.isGameOver) {
-
                     ShowDialog.showGameResultDialog(context, state.winner);
                     if (state.winner == Consts.userMark) {
                       context.read<GameCubit>().restartGame();
-                      context.read<TasksCubit>().completeTask();
-                    }else if (state.winner == Consts.botMark){
-                      DefaultTabController.of(context).animateTo(0);
+                      context.read<TasksCubit>().completeTaskSuccess();
+                    } else if (state.winner == Consts.botMark) {
+                      context.read<GameCubit>().restartGame();
                     }
                   }
                 },
@@ -97,14 +96,14 @@ class _PlayScreenState extends State<PlayScreen> {
     );
   }
 
-  Widget _buildCell(int row, int col, List<List<String?>> board,
-      BuildContext context) {
+  Widget _buildCell(
+      int row, int col, List<List<String?>> board, BuildContext context) {
     final cellValue = board[row][col];
     return GestureDetector(
       onTap: () {
-        setState(() {
-          _rebuildUiEveryTap(col: col, row: row);
-        });
+        if (cellValue == null) {
+          context.read<GameCubit>().userMove(row, col);
+        }
       },
       child: Container(
         width: 100.w,
@@ -119,9 +118,5 @@ class _PlayScreenState extends State<PlayScreen> {
         ),
       ),
     );
-  }
-
-  void _rebuildUiEveryTap({required int row, required int col}) {
-    context.read<GameCubit>().userMove(row, col);
   }
 }
