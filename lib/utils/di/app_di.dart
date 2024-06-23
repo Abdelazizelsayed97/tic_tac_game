@@ -14,17 +14,15 @@ final injector = GetIt.instance;
 class AppDi {
   static Future<void> initializeDi() async {
     injector
-        .registerLazySingleton<TasksRepository>(() => TasksImplRepository());
+        .registerLazySingleton<TasksRepository>(() => TaskRepositoryImpl());
     injector.registerLazySingleton(() => AddTasksUseCase(injector()));
     injector.registerLazySingleton(() => GetTasksUseCase(injector()));
     injector.registerLazySingleton(() => AssignTaskUseCase(injector()));
     injector.registerLazySingleton(() => CompletedTasksUseCase(injector()));
     injector.registerLazySingleton(() => GetCompletedTasksUseCase(injector()));
-    injector.registerLazySingleton(
-            () => TasksCubit(injector(), injector(),injector(),injector(),injector()));
+    injector.registerLazySingleton(() =>
+        TasksCubit(injector(), injector(), injector(), injector(), injector()));
     // injector.registerFactory(
     //         () => GameCubit(injector(),));
-    //   //////////////////////////////notification////////////////////////////////////
-
   }
 }

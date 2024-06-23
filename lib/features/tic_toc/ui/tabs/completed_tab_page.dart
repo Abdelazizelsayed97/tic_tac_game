@@ -11,44 +11,33 @@ class CompletedTabPage extends StatefulWidget {
 }
 
 class _CompletedTabPageState extends State<CompletedTabPage> {
-  void _getAllCompletedData() {
-    TasksCubit.get(context).fetchCompletedTasks();
-  }
+  List<CreateTasksEntity>? taskEntity = [];
 
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  List<CreateTasksEntity>? taskEntity;
-  List<int?> completedTasks = [];
 
   @override
   Widget build(BuildContext context) {
-    return Tab(
-      child: BlocBuilder<TasksCubit, TasksState>(
-        builder: (context, state) {
-          if (state is GetCompletedTasksSuccess) {
-            taskEntity = state.previewEntity;
+    return BlocBuilder<TasksCubit, TasksState>(
+      builder: (context, state) {
+        if (state is GetCompletedTasksSuccess) {
+          taskEntity = state.previewEntity;
 
-            return ListView.builder(
-              itemBuilder: (context, index) {
-                return Card(
-                  child: ListTile(
-                    title: Text(
-                        "Task ${taskEntity?[index].taskCount} is completed"),
-                  ),
-                );
-              },
-              itemCount: taskEntity?.length,
-            );
-          } else {
-            return const Center(
-              child: Text("No tasks completed"),
-            );
-          }
-        },
-      ),
+          return ListView.builder(
+            itemBuilder: (context, index) {
+              return Card(
+                child: ListTile(
+                  title: Text(
+                      "Task ${taskEntity?[index].taskCount} is 😆 completed"),
+                ),
+              );
+            },
+            itemCount: taskEntity?.length,
+          );
+        } else {
+          return const Center(
+            child: Text("No tasks completed"),
+          );
+        }
+      },
     );
   }
 }

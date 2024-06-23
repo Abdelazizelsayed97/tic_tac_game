@@ -21,6 +21,7 @@ class _TabBarWidgetState extends State<TabBarWidget> {
           color: ColorsManger.praimaryColor()
       ),
       child: TabBar(
+
          onTap: (value) {
 
          },

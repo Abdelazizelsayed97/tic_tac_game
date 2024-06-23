@@ -14,16 +14,14 @@ class AssignedTabPage extends StatelessWidget {
     return BlocBuilder<TasksCubit, TasksState>(
       builder: (context, state) {
         if (state is TaskAssignedSuccess) {
-          return Tab(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text('Assigned Task: ${state.assignedTask}'),
-                Text('Timeout: ${state.assignedTimeout} seconds'),
-                verticalSpace(20),
-                 PlayScreen(removeFormList: state.assignedTask,)
-              ],
-            ),
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text('Assigned Task: ${state.assignedTask}'),
+              Text('Timeout: ${state.assignedTimeout} seconds'),
+              verticalSpace(20),
+               PlayScreen(removeFormList: state.assignedTask,),
+            ],
           );
         } else {
           return const Center(
