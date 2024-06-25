@@ -126,7 +126,7 @@ class NoLettersFormatter extends TextInputFormatter {
     final newText = newValue.text;
     final filteredText = newText.replaceAll(RegExp(r'[a-zA-Z]'), '');
 
-    if (newText != filteredText || newValue.text.startsWith(' ')) {
+    if (newText != filteredText || newValue.text.startsWith(' ')||newValue.text.startsWith("0")) {
       return oldValue;
     }
 

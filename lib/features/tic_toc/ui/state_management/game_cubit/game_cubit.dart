@@ -1,7 +1,8 @@
-import 'package:bloc/bloc.dart';
-import 'package:equatable/equatable.dart';
 import 'dart:async';
 import 'dart:math';
+
+import 'package:equatable/equatable.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../utils/consts.dart';
 
@@ -92,7 +93,8 @@ class GameCubit extends Cubit<GameState> {
     return bestMove;
   }
 
-  int _minimaxWithAlphaBeta(List<List<String?>> board, int depth, bool isMaximizer, int alpha, int beta) {
+  int _minimaxWithAlphaBeta(List<List<String?>> board, int depth,
+      bool isMaximizer, int alpha, int beta) {
     String? winner = _getWinner();
     if (winner == Consts.userMark) {
       return 10 - depth;
@@ -110,7 +112,8 @@ class GameCubit extends Cubit<GameState> {
         for (int j = 0; j < 3; j++) {
           if (board[i][j] == null) {
             board[i][j] = Consts.userMark;
-            int score = _minimaxWithAlphaBeta(board, depth + 1, false, alpha, beta);
+            int score =
+                _minimaxWithAlphaBeta(board, depth + 1, false, alpha, beta);
             board[i][j] = null;
             maxScore = max(maxScore, score);
             alpha = max(alpha, score);
@@ -127,7 +130,8 @@ class GameCubit extends Cubit<GameState> {
         for (int j = 0; j < 3; j++) {
           if (board[i][j] == null) {
             board[i][j] = userMark;
-            int score = _minimaxWithAlphaBeta(board, depth + 1, true, alpha, beta);
+            int score =
+                _minimaxWithAlphaBeta(board, depth + 1, true, alpha, beta);
             board[i][j] = null;
             minScore = min(minScore, score);
             beta = min(beta, score);
@@ -154,20 +158,28 @@ class GameCubit extends Cubit<GameState> {
 
   String? _getWinner() {
     for (int i = 0; i < 3; i++) {
-      if (_board[i][0] != null && _board[i][0] == _board[i][1] && _board[i][0] == _board[i][2]) {
+      if (_board[i][0] != null &&
+          _board[i][0] == _board[i][1] &&
+          _board[i][0] == _board[i][2]) {
         return _board[i][0];
       }
 
-      if (_board[0][i] != null && _board[0][i] == _board[1][i] && _board[0][i] == _board[2][i]) {
+      if (_board[0][i] != null &&
+          _board[0][i] == _board[1][i] &&
+          _board[0][i] == _board[2][i]) {
         return _board[0][i];
       }
     }
 
-    if (_board[0][0] != null && _board[0][0] == _board[1][1] && _board[0][0] == _board[2][2]) {
+    if (_board[0][0] != null &&
+        _board[0][0] == _board[1][1] &&
+        _board[0][0] == _board[2][2]) {
       return _board[0][0];
     }
 
-    if (_board[0][2] != null && _board[0][2] == _board[1][1] && _board[0][2] == _board[2][0]) {
+    if (_board[0][2] != null &&
+        _board[0][2] == _board[1][1] &&
+        _board[0][2] == _board[2][0]) {
       return _board[0][2];
     }
 

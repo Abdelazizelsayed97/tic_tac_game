@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:tic_toc_game/features/tic_toc/ui/state_mangement/game_cubit/game_cubit.dart';
-import 'package:tic_toc_game/features/tic_toc/ui/state_mangement/tasks_cubit/tasks_cubit.dart';
 import 'package:tic_toc_game/features/tic_toc/ui/widgets/app_bar_widget.dart';
 import 'package:tic_toc_game/utils/consts.dart';
 import 'package:tic_toc_game/utils/helpers/spacer.dart';
 
 import '../../../utils/helpers/app_daimentions.dart';
+import 'state_management/game_cubit/game_cubit.dart';
+import 'state_management/tasks_cubit/tasks_cubit.dart';
 import 'tabs/assgined_tab_page.dart';
 import 'tabs/completed_tab_page.dart';
 import 'tabs/unassgined_tasks_page.dart';
@@ -42,63 +42,33 @@ class _MainTasksBodyState extends State<MainTasksBody> {
     context.read<TasksCubit>().getTask();
   }
 
-  _stateChanges(TasksState newState) {
-    if (newState is TaskAssignedSuccess) {
-      return newState;
-    } else if (newState is TaskCompleted) {
-      return newState;
-    } else if (newState is GetTasksSuccess) {
-      return newState;
-    } else if (newState is GetCompletedTasksSuccess) {
-      return newState;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: Consts.tabsTitles.length,
-      child: BlocBuilder<TasksCubit, TasksState>(
-        builder: (context, state) {
-          if (state is GetTasksSuccess ||
-              state is TaskAssignedSuccess ||
-              state is TaskCompleted ||
-              state is GetCompletedTasksSuccess) {
-            print('>>>>>>>>>>>>>>>>> $state');
-            return Scaffold(
-              appBar: const AppBarWidget(),
-              body: SafeArea(
-                child: Padding(
-                  padding: AppDimensions.large(),
-                  child: Column(
+      child: Scaffold(
+        appBar: const AppBarWidget(),
+        body: SafeArea(
+          child: Padding(
+            padding: AppDimensions.large(),
+            child: Column(
+              children: [
+                const TabBarWidget(),
+                verticalSpace(20),
+                const Expanded(
+                  child: TabBarView(
+                    clipBehavior: Clip.antiAlias,
                     children: [
-                      const TabBarWidget(),
-                      verticalSpace(20),
-                      Expanded(
-                        child: TabBarView(
-                          clipBehavior: Clip.antiAlias,
-                          children: [
-                            UnassignedTabPage(
-                              getTasksModel: _stateChanges(state).previewModel,
-                            ),
-                            const AssignedTabPage(),
-                            const CompletedTabPage(),
-                          ],
-                        ),
-                      ),
+                      UnassignedTabPage(),
+                      AssignedTabPage(),
+                      CompletedTabPage(),
                     ],
                   ),
                 ),
-              ),
-            );
-          }
-          return const Scaffold(
-            backgroundColor: Colors.blue,
-            body: Center(
-              child: Text("Error in main page"),
+              ],
             ),
-          );
-        },
+          ),
+        ),
       ),
     );
   }

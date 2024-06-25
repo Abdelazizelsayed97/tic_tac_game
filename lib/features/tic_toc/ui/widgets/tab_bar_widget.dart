@@ -15,18 +15,14 @@ class TabBarWidget extends StatefulWidget {
 class _TabBarWidgetState extends State<TabBarWidget> {
   @override
   Widget build(BuildContext context) {
-    return Container(height: 40.h,
+    return Container(
+      height: 40.h,
       decoration: BoxDecoration(
           borderRadius: AppDimensions.radiusLarge(radius: 30.r),
-          color: ColorsManger.praimaryColor()
-      ),
+          color: ColorsManger.praimaryColor()),
       child: TabBar(
-
-         onTap: (value) {
-
-         },
-        overlayColor:
-        const MaterialStatePropertyAll<Color>(Colors.red),
+        onTap: (value) {},
+        overlayColor: const MaterialStatePropertyAll<Color>(Colors.red),
         indicator: BoxDecoration(
           borderRadius: BorderRadius.circular(50.0),
         ),

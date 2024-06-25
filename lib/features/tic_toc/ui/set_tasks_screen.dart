@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tic_toc_game/features/tic_toc/domain/entity/create_tasks_entity.dart';
 import 'package:tic_toc_game/features/tic_toc/ui/main_tasks_page.dart';
-import 'package:tic_toc_game/features/tic_toc/ui/state_mangement/tasks_cubit/tasks_cubit.dart';
 import 'package:tic_toc_game/features/tic_toc/ui/widgets/app_bar_widget.dart';
 import 'package:tic_toc_game/utils/app_button/app_button.dart';
 import 'package:tic_toc_game/utils/app_text_field/app_text_field.dart';
@@ -11,6 +10,8 @@ import 'package:tic_toc_game/utils/consts.dart';
 import 'package:tic_toc_game/utils/helpers/app_daimentions.dart';
 import 'package:tic_toc_game/utils/helpers/spacer.dart';
 import 'package:tic_toc_game/utils/text_styles/text_styles.dart';
+
+import 'state_management/tasks_cubit/tasks_cubit.dart';
 
 class SetTasksScreen extends StatefulWidget {
   const SetTasksScreen({super.key});
@@ -26,21 +27,10 @@ class _SetTasksScreenState extends State<SetTasksScreen> {
 
   bool _isFilled() {
     if ((_numberOfTaskController.text.isNotEmpty) &&
-        (_sequenceOfTaskController.text.isNotEmpty)
-       ) {
+        (_sequenceOfTaskController.text.isNotEmpty)) {
       return true;
     } else {
       return false;
-    }
-  }
-
-  bool validateCreateTasks() {
-    final int taskCount = int.parse(_numberOfTaskController.text);
-    final int sequenceCount = int.parse(_sequenceOfTaskController.text);
-    if (taskCount <= sequenceCount) {
-      return false;
-    } else {
-      return true;
     }
   }
 
@@ -52,12 +42,11 @@ class _SetTasksScreenState extends State<SetTasksScreen> {
   }
 
   void _onGoPress() {
-
-    if (_isFilled()==true) {
+    if (_isFilled() == true) {
       context.read<TasksCubit>().setTask(
             input: CreateTasksEntity(
               taskCount: _numberOfTaskController.text.trim(),
-              sequence: _sequenceOfTaskController.text,
+              sequence: _sequenceOfTaskController.text.trim(),
             ),
           );
     }
@@ -67,7 +56,7 @@ class _SetTasksScreenState extends State<SetTasksScreen> {
   Widget build(BuildContext context) {
     return BlocListener<TasksCubit, TasksState>(
       listener: (context, state) {
-        if (state is TaskSetSuccess) {
+        if (state.type == TasksStateType.taskSetSuccess) {
           Navigator.push(
             context,
             MaterialPageRoute(

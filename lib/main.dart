@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:tic_toc_game/features/tic_toc/ui/state_mangement/tasks_cubit/tasks_cubit.dart';
+import 'package:tic_toc_game/features/tic_toc/ui/state_management/timer/timer_cubit.dart';
 import 'package:tic_toc_game/utils/colors/app_colors.dart';
 import 'package:tic_toc_game/utils/di/app_di.dart';
 
 import 'features/tic_toc/ui/set_tasks_screen.dart';
+import 'features/tic_toc/ui/state_management/tasks_cubit/tasks_cubit.dart';
 
 void main() {
   runApp(TicTacGame());
@@ -27,9 +28,19 @@ class TicTacGame extends StatelessWidget {
   Widget build(BuildContext context) {
     return ScreenUtilInit(
       designSize: const Size(375, 812),
-      child: BlocProvider(
-        create: (context) => TasksCubit(
-            injector(), injector(), injector(), injector(), injector()),
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (context) => TasksCubit(
+                injector(), injector(), injector(), injector(), injector()),
+          ),
+          // BlocProvider(
+          //   create: (context) => TimerCubit(
+          //     TasksCubit.get(context).state.previewModel!.taskTimeout?.first ??
+          //         0,
+          //   ),
+          // )
+        ],
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
           theme: _theme,

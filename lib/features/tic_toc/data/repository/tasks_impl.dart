@@ -30,6 +30,7 @@ class TaskRepositoryImpl implements TasksRepository {
 
   @override
   List<CreateTasksEntity> getCompletedTasks() {
+
     return completedTasksList;
   }
 }

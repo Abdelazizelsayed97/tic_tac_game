@@ -1,39 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:tic_toc_game/features/tic_toc/ui/state_mangement/tasks_cubit/tasks_cubit.dart';
 import 'package:tic_toc_game/utils/helpers/spacer.dart';
 import 'package:tic_toc_game/utils/text_styles/text_styles.dart';
 
 import '../../../../utils/consts.dart';
-import '../state_mangement/game_cubit/game_cubit.dart';
+import '../state_management/game_cubit/game_cubit.dart';
+import '../state_management/tasks_cubit/tasks_cubit.dart';
 import 'game_result_handler.dart';
 
 class PlayScreen extends StatefulWidget {
-  const PlayScreen({super.key, required this.removeFormList});
-final int removeFormList;
+  const PlayScreen({super.key, required this.removeFromList});
+
+  final int removeFromList;
+
   @override
   State<PlayScreen> createState() => _PlayScreenState();
 }
 
 class _PlayScreenState extends State<PlayScreen> {
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return SizedBox(
       height: MediaQuery.of(context).size.height * .5,
       child: BlocListener<TasksCubit, TasksState>(
         listener: (context, state) {
-          if (state is TaskCompleted) {
+          if (state.type == TasksStateType.taskCompleted) {
             print('state is TaskCompleted');
-            context.read<TasksCubit>().deleteFromList(widget.removeFormList);
+            context.read<TasksCubit>().deleteFromList(widget.removeFromList);
             DefaultTabController.of(context).animateTo(2);
             context.read<TasksCubit>().fetchCompletedTasks();
-          } else if (state is TaskAssignedSuccess) {
+          } else if (state.type == TasksStateType.taskAssignedSuccess) {
             print('state is TaskAssigned');
             context.read<GameCubit>().restartGame();
           }
@@ -65,7 +62,7 @@ class _PlayScreenState extends State<PlayScreen> {
                       ],
                     );
                   }
-                  return const CircularProgressIndicator();
+                  return const Center(child: CircularProgressIndicator());
                 },
               ),
             ),
