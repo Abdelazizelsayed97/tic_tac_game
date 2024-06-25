@@ -34,12 +34,16 @@ class TicTacGame extends StatelessWidget {
             create: (context) => TasksCubit(
                 injector(), injector(), injector(), injector(), injector()),
           ),
-          // BlocProvider(
-          //   create: (context) => TimerCubit(
-          //     TasksCubit.get(context).state.previewModel!.taskTimeout?.first ??
-          //         0,
-          //   ),
-          // )
+          BlocProvider(
+            create: (context) => TimerCubit()
+              ..startTimer(
+                remainingTimes: (TasksCubit.get(context)
+                        .state
+                        .previewModel
+                        ?.taskTimeout
+                        ??[]),
+              ),
+          )
         ],
         child: MaterialApp(
           debugShowCheckedModeBanner: false,

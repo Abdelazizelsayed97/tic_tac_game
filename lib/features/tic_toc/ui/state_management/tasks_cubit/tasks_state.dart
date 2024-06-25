@@ -1,7 +1,7 @@
 part of 'tasks_cubit.dart';
 
 enum TasksStateType {
-   initial,
+  initial,
   loading,
   taskSetSuccess,
   getTasksSuccess,

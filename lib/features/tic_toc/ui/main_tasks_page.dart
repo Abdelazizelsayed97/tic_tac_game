@@ -35,10 +35,6 @@ class _MainTasksBodyState extends State<MainTasksBody> {
   @override
   void initState() {
     super.initState();
-    _initializeTasks();
-  }
-
-  void _initializeTasks() {
     context.read<TasksCubit>().getTask();
   }
 

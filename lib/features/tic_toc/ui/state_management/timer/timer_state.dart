@@ -1,20 +1,14 @@
 part of 'timer_cubit.dart';
 
-@immutable
 abstract class TimerState {
-  final int remainingTime;
-  const TimerState(this.remainingTime);
+  final List<int> remainingTimes;
+  const TimerState(this.remainingTimes);
 }
 
 class TimerInitial extends TimerState {
-  const TimerInitial(int remainingTime) : super(remainingTime);
+  const TimerInitial(List<int> remainingTimes) : super(remainingTimes);
 }
 
 class TimerRunInProgress extends TimerState {
-  const TimerRunInProgress(int remainingTime) : super(remainingTime);
-}
-
-
-class TimerComplete extends TimerState {
-  const TimerComplete() : super(0);
+  const TimerRunInProgress(List<int> remainingTimes) : super(remainingTimes);
 }

@@ -6,11 +6,12 @@ class CreateTasksEntity extends Equatable {
 
   const CreateTasksEntity({
     required this.taskCount,
-    this.sequence,
+    required this.sequence,
   });
 
   @override
-  List<Object> get props => [
-        taskCount
+  List<Object?> get props => [
+        taskCount,
+        sequence,
       ];
 }

@@ -1,34 +1,35 @@
 import 'dart:async';
-
-import 'package:bloc/bloc.dart';
-import 'package:meta/meta.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter/cupertino.dart';
 
 part 'timer_state.dart';
 
 class TimerCubit extends Cubit<TimerState> {
   Timer? _timer;
-  int _remainingTime;
 
-  TimerCubit(this._remainingTime) : super(TimerInitial(_remainingTime));
+  TimerCubit() : super(const TimerInitial([]));
 
-  void startTimer() {
+  static TimerCubit get(BuildContext context) => BlocProvider.of<TimerCubit>(context);
+
+  void startTimer({required List<int> remainingTimes}) {
     _timer?.cancel();
-    emit(TimerRunInProgress(_remainingTime));
+    emit(TimerRunInProgress(remainingTimes));
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (_remainingTime > 0) {
-        _remainingTime--;
-        emit(TimerRunInProgress(_remainingTime));
-      } else {
-        timer.cancel();
-        emit(const TimerComplete());
+      final updatedTimes = List<int>.from((state as TimerRunInProgress).remainingTimes);
+      for (int i = 0; i < updatedTimes.length; i++) {
+        if (updatedTimes[i] > 0) {
+          updatedTimes[i]--;
+        }
+      }
+      emit(TimerRunInProgress(updatedTimes));
+      if (updatedTimes.every((time) => time == 0)) {
+        _timer?.cancel();
       }
     });
   }
 
-  void resetTimer(int newTime) {
+  void stopTimer() {
     _timer?.cancel();
-    _remainingTime = newTime;
-    emit(TimerInitial(_remainingTime));
   }
 
   @override

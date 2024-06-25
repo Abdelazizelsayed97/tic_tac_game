@@ -23,7 +23,6 @@ class TasksCubit extends Cubit<TasksState> {
   final List<int> _timePerSecondList = [];
   DateTime? _startTime;
 
-
   TasksCubit(this._addTasksUseCase, this._getTasksUseCase,
       this._assignTasksUseCase, this._completedTasksUseCase, this._getCompleted)
       : super(const TasksState.initial());
@@ -58,6 +57,7 @@ class TasksCubit extends Cubit<TasksState> {
     // Reset the start time after updating to ensure accurate timing on the next tick
     _startTime = DateTime.now();
   }
+
   void deleteFromList(int index) {
     taskList.removeWhere(
       (element) => element == state.assignedTask,
@@ -92,6 +92,7 @@ class TasksCubit extends Cubit<TasksState> {
 
       final int taskCount = int.parse(response.taskCount);
       final int sequence = int.parse(response.sequence ?? '');
+      print('sequence result ${sequence}');
 
       addTasksToList(taskCount);
       addTimeToList(sequence);

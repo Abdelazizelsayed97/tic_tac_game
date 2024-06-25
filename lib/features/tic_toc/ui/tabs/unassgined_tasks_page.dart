@@ -1,12 +1,10 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tic_toc_game/features/tic_toc/data/model/get_tasks_model.dart';
-import 'package:tic_toc_game/utils/consts.dart';
+import 'package:tic_toc_game/features/tic_toc/domain/entity/create_tasks_entity.dart';
+import 'package:tic_toc_game/features/tic_toc/ui/state_management/timer/timer_cubit.dart';
 
 import '../state_management/tasks_cubit/tasks_cubit.dart';
-import '../widgets/game_result_handler.dart';
 
 class UnassignedTabPage extends StatefulWidget {
   const UnassignedTabPage({
@@ -18,57 +16,16 @@ class UnassignedTabPage extends StatefulWidget {
 }
 
 class _UnassignedTabPageState extends State<UnassignedTabPage> {
-  List<int> _remainingTimes = [];
-  List<Timer> _timers = [];
   GetTasksModel? getTasksModel;
 
   @override
   void initState() {
-    super.initState();
     getTasksModel = TasksCubit.get(context).state.previewModel;
-    _initializeTimers();
+    super.initState();
   }
 
-  void _initializeTimers() {
-    _remainingTimes = List.from(getTasksModel?.taskTimeout ?? []);
-    _timers = List.generate(
-      getTasksModel!.taskTimeout!.length,
-      (index) {
-        return Timer.periodic(
-          const Duration(seconds: 1),
-          (timer) {
-            setState(
-              () {
-                if (_remainingTimes[index] > 0) {
-                  _remainingTimes[index]--;
-                } else if (_remainingTimes[index] == 0) {
-                  timer.cancel();
-                  context.read<TasksCubit>().deleteFromList(index);
-                }
-              },
-            );
-          },
-        );
-      },
-    );
-  }
-
-  void _initializeTasks() {
+  void _fetchTaskByCount() {
     context.read<TasksCubit>().getTask();
-  }
-
-  @override
-  void dispose() {
-    for (var timer in _timers) {
-      timer.cancel();
-    }
-    super.dispose();
-  }
-
-  String _formatTime(int seconds) {
-    int minutes = seconds ~/ 60;
-    int remainingSeconds = seconds % 60;
-    return '${minutes.toString().padLeft(2, '0')}:${remainingSeconds.toString().padLeft(2, '0')}';
   }
 
   void _assignTask(
@@ -81,15 +38,25 @@ class _UnassignedTabPageState extends State<UnassignedTabPage> {
   }
 
   void _onAssignTaskPressed(int index) {
-    _assignTask(
-        taskCount: getTasksModel?.taskCount?[index] ?? 0,
-        sequence: _remainingTimes[index],
-        index: index);
-    ShowDialog.showErrorDialog(
-      context: context,
-      message: Consts.taskAssigned,
-    );
+    // _assignTask(
+    //     taskCount: getTasksModel?.taskCount?[index] ?? 0,
+    //     sequence: _remainingTimes[index],
+    //     index: index);
+    // ShowDialog.showErrorDialog(
+    //   context: context,
+    //   message: Consts.taskAssigned,
+    // );
   }
+
+//    final taskCount = int.tryParse(entity?.taskCount ?? '') ?? 0;
+//     final timeout = int.tryParse(entity?.sequence ?? '') ?? 0;
+//     taskTimerList = List.generate(
+//       taskCount,
+//       (index) => TaskTimer(
+//         timeout: timeout * (index + 1),
+//       ),
+//     );
+
 
   @override
   Widget build(BuildContext context) {
@@ -98,33 +65,28 @@ class _UnassignedTabPageState extends State<UnassignedTabPage> {
         if (state.type == TasksStateType.taskAssignedSuccess) {
           DefaultTabController.of(context).animateTo(1);
         }
-        if (state.type == TasksStateType.getTasksSuccess) {
-          setState(() {
-            _initializeTimers();
-          });
-        }
       },
-      child: getTasksModel?.taskCount?.isNotEmpty == true
-          ? ListView.builder(
-              itemBuilder: (context, index) {
-                return Card(
-                  child: ListTile(
-                    title: Text('Task ${getTasksModel?.taskCount?[index]}'),
-                    trailing: Text(_formatTime(_remainingTimes[index])),
-                    onTap: () => _onAssignTaskPressed(index),
-                  ),
-                );
-              },
-              itemCount: getTasksModel?.taskCount?.length,
-            )
-          : Center(
-              child: ElevatedButton(
-                onPressed: () {
-                  _initializeTasks();
-                },
-                child: const Text('Reload'),
-              ),
-            ),
+      child: BlocBuilder<TimerCubit, TimerState>(
+        builder: (context, state) {
+          final minutes =
+              state.remainingTimes.map((time) => time ~/ 60).toList();
+          final seconds =
+              state.remainingTimes.map((time) => time % 60).toList();
+          return ListView.builder(
+            itemBuilder: (context, index) {
+              return Card(
+                child: ListTile(
+                  title: Text('Task ${index + 1}'),
+                  trailing: Text(
+                      '${minutes[index].toString().padLeft(2, '0')}:${seconds[index].toString().padLeft(2, '0')}'),
+                  onTap: () => _onAssignTaskPressed(index),
+                ),
+              );
+            },
+            itemCount: (getTasksModel?.taskCount?.length),
+          );
+        },
+      ),
     );
   }
 }

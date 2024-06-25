@@ -12,13 +12,13 @@ class TaskRepositoryImpl implements TasksRepository {
   @override
   void setTasks(CreateTasksEntity input) {
     _taskCount = input.taskCount;
-    _sequence = input.taskCount;
+    _sequence = input.sequence ?? '';
   }
+
   @override
   CreateTasksEntity getTasks() {
     return CreateTasksEntity(taskCount: _taskCount, sequence: _sequence);
   }
-
 
   @override
   void assignTasks(GetTasksModel input) {}
@@ -30,7 +30,6 @@ class TaskRepositoryImpl implements TasksRepository {
 
   @override
   List<CreateTasksEntity> getCompletedTasks() {
-
     return completedTasksList;
   }
 }
